@@ -22,6 +22,7 @@ function injectPrismLanguages() {
   import('prismjs/components/prism-diff' as Language);
   import('prismjs/components/prism-groovy' as Language);
   import('prismjs/components/prism-ini' as Language);
+  import('prismjs/components/prism-java' as Language);
   import('prismjs/components/prism-json' as Language);
   import('prismjs/components/prism-objectivec' as Language);
   import('prismjs/components/prism-properties' as Language);
