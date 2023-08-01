@@ -6,8 +6,6 @@ import { Language, Prism } from 'prism-react-renderer';
 import * as React from 'react';
 import tippy, { roundArrow } from 'tippy.js';
 
-import { installLanguages } from './languages';
-
 import { Snippet } from '~/ui/components/Snippet/Snippet';
 import { SnippetContent } from '~/ui/components/Snippet/SnippetContent';
 import { SnippetHeader } from '~/ui/components/Snippet/SnippetHeader';
@@ -17,7 +15,20 @@ import { CODE } from '~/ui/components/Text';
 // @ts-ignore Jest ESM issue https://github.com/facebook/jest/issues/9430
 const { default: testTippy } = tippy;
 
-installLanguages(Prism);
+// Read more: https://github.com/FormidableLabs/prism-react-renderer#custom-language-support
+(typeof global !== 'undefined' ? global : window).Prism = Prism;
+function injectPrismLanguages() {
+  import('prismjs/components/prism-bash' as Language);
+  import('prismjs/components/prism-diff' as Language);
+  import('prismjs/components/prism-groovy' as Language);
+  import('prismjs/components/prism-ini' as Language);
+  import('prismjs/components/prism-json' as Language);
+  import('prismjs/components/prism-objectivec' as Language);
+  import('prismjs/components/prism-properties' as Language);
+  import('prismjs/components/prism-ruby' as Language);
+  import('prismjs/components/prism-tsx' as Language);
+}
+injectPrismLanguages();
 
 const attributes = {
   'data-text': true,
@@ -113,8 +124,8 @@ export class Code extends React.Component<React.PropsWithChildren<Props>> {
   private replaceXmlCommentsWithAnnotations(value: string) {
     return value
       .replace(
-        /<span class="token comment">&lt;!-- @info (.*?)--><\/span>\s*/g,
-        (match, content) => {
+        /<span class="token (comment|plain-text)">&lt;!-- @info (.*?)--><\/span>\s*/g,
+        (match, type, content) => {
           return content
             ? `<span class="code-annotation with-tooltip" data-tippy-content="${this.escapeHtml(
                 content
@@ -123,48 +134,63 @@ export class Code extends React.Component<React.PropsWithChildren<Props>> {
         }
       )
       .replace(
-        /<span class="token comment">&lt;!-- @hide (.*?)--><\/span>\s*/g,
-        (match, content) => {
+        /<span class="token (comment|plain-text)">&lt;!-- @hide (.*?)--><\/span>\s*/g,
+        (match, type, content) => {
           return `<span><span class="code-hidden">%%placeholder-start%%</span><span class="code-placeholder">${this.escapeHtml(
             content
           )}</span><span class="code-hidden">%%placeholder-end%%</span><span class="code-hidden">`;
         }
       )
-      .replace(/\s*<span class="token comment">&lt;!-- @end --><\/span>/g, '</span>');
+      .replace(/\s*<span class="token (comment|plain-text)">&lt;!-- @end --><\/span>/g, '</span>');
   }
 
   private replaceHashCommentsWithAnnotations(value: string) {
     return value
-      .replace(/<span class="token comment"># @info (.*?)#<\/span>\s*/g, (match, content) => {
-        return content
-          ? `<span class="code-annotation with-tooltip" data-tippy-content="${this.escapeHtml(
-              content
-            )}">`
-          : '<span class="code-annotation">';
-      })
-      .replace(/<span class="token comment"># @hide (.*?)#<\/span>\s*/g, (match, content) => {
-        return `<span><span class="code-hidden">%%placeholder-start%%</span><span class="code-placeholder">${this.escapeHtml(
-          content
-        )}</span><span class="code-hidden">%%placeholder-end%%</span><span class="code-hidden">`;
-      })
-      .replace(/\s*<span class="token comment"># @end #<\/span>/g, '</span>');
+      .replace(
+        /<span class="token (comment|plain-text)"># @info (.*?)#<\/span>\s*/g,
+        (match, type, content) => {
+          return content
+            ? `<span class="code-annotation with-tooltip" data-tippy-content="${this.escapeHtml(
+                content
+              )}">`
+            : '<span class="code-annotation">';
+        }
+      )
+      .replace(
+        /<span class="token (comment|plain-text)"># @hide (.*?)#<\/span>\s*/g,
+        (match, type, content) => {
+          return `<span><span class="code-hidden">%%placeholder-start%%</span><span class="code-placeholder">${this.escapeHtml(
+            content
+          )}</span><span class="code-hidden">%%placeholder-end%%</span><span class="code-hidden">`;
+        }
+      )
+      .replace(/\s*<span class="token (comment|plain-text)"># @end #<\/span>/g, '</span>');
   }
 
   private replaceSlashCommentsWithAnnotations(value: string) {
     return value
-      .replace(/<span class="token comment">\/\* @info (.*?)\*\/<\/span>\s*/g, (match, content) => {
-        return content
-          ? `<span class="code-annotation with-tooltip" data-tippy-content="${this.escapeHtml(
-              content
-            )}">`
-          : '<span class="code-annotation">';
-      })
-      .replace(/<span class="token comment">\/\* @hide (.*?)\*\/<\/span>\s*/g, (match, content) => {
-        return `<span><span class="code-hidden">%%placeholder-start%%</span><span class="code-placeholder">${this.escapeHtml(
-          content
-        )}</span><span class="code-hidden">%%placeholder-end%%</span><span class="code-hidden">`;
-      })
-      .replace(/\s*<span class="token comment">\/\* @end \*\/<\/span>/g, '</span>');
+      .replace(
+        /<span class="token (comment|plain-text)">([\n\r\s]*)\/\* @info (.*?)\*\/[\n\r\s]*<\/span>\s*/g,
+        (match, type, beforeWhitespace, content) => {
+          return content
+            ? `${beforeWhitespace}<span class="code-annotation with-tooltip" data-tippy-content="${this.escapeHtml(
+                content
+              )}">`
+            : `${beforeWhitespace}<span class="code-annotation">`;
+        }
+      )
+      .replace(
+        /<span class="token (comment|plain-text)">([\n\r\s]*)\/\* @hide (.*?)\*\/([\n\r\s]*)<\/span>\s*/g,
+        (match, type, beforeWhitespace, content, afterWhitespace) => {
+          return `<span><span class="code-hidden">%%placeholder-start%%</span><span class="code-placeholder">${beforeWhitespace}${this.escapeHtml(
+            content
+          )}${afterWhitespace}</span><span class="code-hidden">%%placeholder-end%%</span><span class="code-hidden">`;
+        }
+      )
+      .replace(
+        /\s*<span class="token (comment|plain-text)">[\n\r\s]*\/\* @end \*\/([\n\r\s]*)<\/span>/g,
+        (match, type, afterWhitespace) => `</span>${afterWhitespace}`
+      );
   }
 
   private parseValue(value: string) {
