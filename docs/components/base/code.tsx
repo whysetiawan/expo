@@ -214,9 +214,9 @@ export class Code extends React.Component<React.PropsWithChildren<Props>> {
       }
 
       const grammar = Prism.languages[lang as keyof typeof Prism.languages];
-      // if (!grammar) {
-      //   throw new Error(`docs currently do not support language: ${lang}`);
-      // }
+      if (!grammar) {
+        throw new Error(`docs currently do not support language: ${lang}`);
+      }
 
       html = Prism.highlight(html, grammar, lang as Language);
       if (['properties', 'ruby', 'bash', 'yaml'].includes(lang)) {
