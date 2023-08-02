@@ -15,22 +15,6 @@ import { CODE } from '~/ui/components/Text';
 // @ts-ignore Jest ESM issue https://github.com/facebook/jest/issues/9430
 const { default: testTippy } = tippy;
 
-// Read more: https://github.com/FormidableLabs/prism-react-renderer#custom-language-support
-(typeof global !== 'undefined' ? global : window).Prism = Prism;
-function injectPrismLanguages() {
-  import('prismjs/components/prism-bash' as Language);
-  import('prismjs/components/prism-diff' as Language);
-  import('prismjs/components/prism-groovy' as Language);
-  import('prismjs/components/prism-ini' as Language);
-  import('prismjs/components/prism-java' as Language);
-  import('prismjs/components/prism-json' as Language);
-  import('prismjs/components/prism-objectivec' as Language);
-  import('prismjs/components/prism-properties' as Language);
-  import('prismjs/components/prism-ruby' as Language);
-  import('prismjs/components/prism-tsx' as Language);
-}
-injectPrismLanguages();
-
 const attributes = {
   'data-text': true,
 };
@@ -230,9 +214,9 @@ export class Code extends React.Component<React.PropsWithChildren<Props>> {
       }
 
       const grammar = Prism.languages[lang as keyof typeof Prism.languages];
-      if (!grammar) {
-        throw new Error(`docs currently do not support language: ${lang}`);
-      }
+      // if (!grammar) {
+      //   throw new Error(`docs currently do not support language: ${lang}`);
+      // }
 
       html = Prism.highlight(html, grammar, lang as Language);
       if (['properties', 'ruby', 'bash', 'yaml'].includes(lang)) {
