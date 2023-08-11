@@ -16,7 +16,7 @@ import { CODE } from '~/ui/components/Text';
 const { default: testTippy } = tippy;
 
 // Read more: https://github.com/FormidableLabs/prism-react-renderer#custom-language-support
-async function initPrism() {
+function initPrism() {
   (typeof global !== 'undefined' ? global : window).Prism = Prism;
   import('prismjs/components/prism-bash' as Language);
   import('prismjs/components/prism-diff' as Language);
@@ -27,7 +27,6 @@ async function initPrism() {
   import('prismjs/components/prism-objectivec' as Language);
   import('prismjs/components/prism-properties' as Language);
   import('prismjs/components/prism-ruby' as Language);
-  import('prismjs/components/prism-tsx' as Language);
 }
 
 initPrism();
@@ -230,12 +229,13 @@ export class Code extends React.Component<React.PropsWithChildren<Props>> {
         lang = remapLanguages[lang];
       }
 
-      const grammar = Prism.languages[lang as keyof typeof Prism.languages];
+      const grammar = Prism.languages[lang];
+
       if (!grammar) {
         throw new Error(`docs currently do not support language: ${lang}`);
       }
 
-      html = Prism.highlight(html, grammar, lang as Language);
+      html = Prism.highlight(html, grammar, lang);
       if (['properties', 'ruby', 'bash', 'yaml'].includes(lang)) {
         html = this.replaceHashCommentsWithAnnotations(html);
       } else if (['xml', 'html'].includes(lang)) {
