@@ -15,6 +15,23 @@ import { CODE } from '~/ui/components/Text';
 // @ts-ignore Jest ESM issue https://github.com/facebook/jest/issues/9430
 const { default: testTippy } = tippy;
 
+// Read more: https://github.com/FormidableLabs/prism-react-renderer#custom-language-support
+async function initPrism() {
+  (typeof global !== 'undefined' ? global : window).Prism = Prism;
+  import('prismjs/components/prism-bash' as Language);
+  import('prismjs/components/prism-diff' as Language);
+  import('prismjs/components/prism-groovy' as Language);
+  import('prismjs/components/prism-ini' as Language);
+  import('prismjs/components/prism-java' as Language);
+  import('prismjs/components/prism-json' as Language);
+  import('prismjs/components/prism-objectivec' as Language);
+  import('prismjs/components/prism-properties' as Language);
+  import('prismjs/components/prism-ruby' as Language);
+  import('prismjs/components/prism-tsx' as Language);
+}
+
+initPrism();
+
 const attributes = {
   'data-text': true,
 };
