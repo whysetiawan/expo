@@ -44,12 +44,32 @@
 
 #if __has_include(<React-RCTAppDelegate/RCTAppDelegate.h>) || __has_include(<React_RCTAppDelegate/RCTAppDelegate.h>)
 
+- (UIView *)findRootView:(UIApplication *)application
+{
+#if TARGET_OS_OSX
+  return [[[[NSApplication sharedApplication] keyWindow] contentViewController] view];
+#else
+  UIWindow *mainWindow = application.delegate.window;
+  if (mainWindow == nil) {
+    return nil;
+  }
+  UIViewController *rootViewController = mainWindow.rootViewController;
+  if (rootViewController == nil) {
+    return nil;
+  }
+  UIView *rootView = rootViewController.view;
+  return rootView;
+#endif
+}
+
+#if !TARGET_OS_OSX
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   [super application:application didFinishLaunchingWithOptions:launchOptions];
   [_expoAppDelegate application:application didFinishLaunchingWithOptions:launchOptions];
   return YES;
 }
+#endif // !TARGET_OS_OSX
 
 - (RCTBridge *)createBridgeWithDelegate:(id<RCTBridgeDelegate>)delegate launchOptions:(NSDictionary *)launchOptions
 {
