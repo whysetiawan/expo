@@ -808,8 +808,6 @@ PODS:
     - ExpoModulesCore
     - ZXingObjC/OneD
     - ZXingObjC/PDF417
-  - EXCalendar (12.1.0):
-    - ExpoModulesCore
   - EXConstants (15.2.0):
     - ExpoModulesCore
   - EXContacts (12.6.0):
@@ -1814,7 +1812,6 @@ DEPENDENCIES:
   - EASClient/Tests (from `../packages/expo-eas-client/ios`)
   - EXAV (from `../packages/expo-av/ios`)
   - EXBarCodeScanner (from `../packages/expo-barcode-scanner/ios`)
-  - EXCalendar (from `../packages/expo-calendar/ios`)
   - EXConstants (from `../packages/expo-constants/ios`)
   - EXContacts (from `../packages/expo-contacts/ios`)
   - EXFont (from `../packages/expo-font/ios`)
@@ -2242,8 +2239,6 @@ EXTERNAL SOURCES:
     :path: "../packages/expo-av/ios"
   EXBarCodeScanner:
     :path: "../packages/expo-barcode-scanner/ios"
-  EXCalendar:
-    :path: "../packages/expo-calendar/ios"
   EXConstants:
     :path: "../packages/expo-constants/ios"
   EXContacts:
@@ -2607,11 +2602,9 @@ SPEC CHECKSUMS:
   Branch: 23b6b9351d5574377e7a764841cfb13a70c2799b
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
-<<<<<<< HEAD
   EASClient: b98df462964e03ad48a44615e0141d8d25bfc4d4
   EXAV: 6e2524617053a4590b0ef46a4fcb9a13d97bac8a
   EXBarCodeScanner: da49272be74d5be70d0f5eab3dea576977b8d0cf
-  EXCalendar: 31d366a7851700af2eca360a3673503b774a3304
   EXConstants: 230de23b26974884686d49205e6822a02b6dd6d0
   EXContacts: 24e46f5cf1ba9776a2f301c4f3aa821848035a10
   EXFont: e5fa244ad8c8d6fcf3a215e1fdcaedbc9b580aad
@@ -2628,6 +2621,7 @@ SPEC CHECKSUMS:
   ExpoBattery: 807b36eacbe112503a9a0ca0f862ee7a653a4639
   ExpoBlur: fd3aefb4b4f3acaaa1ca2406cf9a98351ec5ffc4
   ExpoBrightness: f521d33b9a5211ba9c4d1749b4ec7ca3d9aa3cd3
+  ExpoCalendar: 39678cd34ca2baa79e1ef0e63ac8fad25ca2b478
   ExpoCamera: e7f55f4baad8f8934bf57a606919d2fd66953f23
   ExpoCellular: 23176ea4488b3a69a43101a31857b84e2df71305
   ExpoClipboard: f0beee97ddfe5d3376d9e2d6ff72300be6a07d70
@@ -2670,142 +2664,6 @@ SPEC CHECKSUMS:
   EXTaskManager: 8bbe029b46e7e419a0429837ced467791fc6c806
   EXUpdates: 131dc5d0a58711e43eead0a785f863e810e55ee1
   EXUpdatesInterface: defbda79f841a0dec9588f2cbf9fdfed52583667
-||||||| parent of 8e3888e836 ([ios][calendar] fix pod files)
-  EASClient: e40ec588adaaed075128bebdcd852e1fe749ea02
-  EXAV: 99e41d9fd39a5d17eb66d822197a249d80140d56
-  EXBarCodeScanner: 9d23a7823c1dda81249aa8d494bae6130e312ab1
-  EXBranch: 3abd983225b85532b79f257ca2c8f573b7d468c7
-<<<<<<< HEAD
-  EXCalendar: 3380176a50dac91328e80a1cf32b6819dc0f08f4
-||||||| parent of 6abb2c0b88 ([ios][calendar] make requested changes)
-  EXCalendar: 3380176a50dac91328e80a1cf32b6819dc0f08f4
-  EXCamera: 89727fb1ba3f588d3556f3a51581ec22200e189b
-=======
-  EXCamera: 89727fb1ba3f588d3556f3a51581ec22200e189b
->>>>>>> 6abb2c0b88 ([ios][calendar] make requested changes)
-  EXConstants: 1734e43270773c7e22c50492bcbd3c2557f4bf14
-  EXContacts: 49cadf80e7f1019821dde4a536960717f474dbeb
-  EXFont: f229885758944aad44348468d62a3493012decd6
-  EXImageLoader: 7f0a6f7534461787baf1c6c1140c6c13e89e82bb
-  EXJSONUtils: f201c0e92a2a835909714b9c60f6fd65dd01f785
-  EXLocation: 43aa0af2d612791245df41f86d0995c7380abd53
-  EXManifests: 04bba5e6b64da18ac13011c367316f203760dea8
-  EXMediaLibrary: 2b8d9f49a6c2523b4e0ae9557db05f1343ef820d
-  EXNotifications: c3d43ae880be510cd95d92cc63505383c66dd353
-  Expo: a0d8fe46ad02731a3f8df4bee9792154ad72bff1
-  ExpoAppleAuthentication: c6d8719247589d41c3ec89e8a822ecf0c4d56d51
-  ExpoApplication: 47646ff8a434290959a73f131cba7a96eba2be9e
-  ExpoBackgroundFetch: 6753a73c4c5e705c19f00e5bd69f7284a1f8f9f7
-  ExpoBattery: f7ecc6800108c14a1425d3e7ea49609a5e1cb013
-  ExpoBlur: 2e733ec3aa76653040b29a833984f128a293295a
-  ExpoBrightness: dfc8f9e9e936decbda6b1a332e7f7176f28377ab
-  ExpoCamera: 377b2a9759cd86e455d6fb46b65b3eb6f8e29446
-  ExpoCellular: 1870591227bdb23b171490ea9ea06f504f2cb812
-  ExpoClipboard: 8f04af2957214af1e45a056b2331327721cd7168
-  ExpoCrypto: ebc31369538a8a56cc2a5d447c22318465e4f14f
-  ExpoDevice: 9587c3f5820c176dfaa861c5eff6cdcb67bd3e89
-  ExpoDocumentPicker: 630b37fedb2911064d33236cc93729bebe2cce5f
-  ExpoFileSystem: 9920645fb15201acac21ee631799ac9bfcad8479
-  ExpoGL: b0a5371872d1857fb6f154a0df7e41a72ed70465
-  ExpoHaptics: acdfbe0450cf8c8ce97b5801326d0dddbddf7048
-  ExpoHead: 625d2c4518d00ccc47cd7cbeb89975570ad57ba0
-  ExpoImage: 64cd716d10414edf59342de32043857a58e9a2a3
-  ExpoImageManipulator: 6c30083e367e83eb7719db833c225bfc2ae53fe4
-  ExpoImagePicker: d01668d6308e1b7bd50b530ee72187f62dcd1c48
-  ExpoKeepAwake: 1ced2ebbeb594a66462568a7b7d9ac06f88abe89
-  ExpoLinearGradient: 4c88e406b9c9ccefcc657943b26c9b1d72882c26
-  ExpoLocalAuthentication: dd96886ee4c50a0ec5b73bae5e929ea082a2e53e
-  ExpoLocalization: ac58dde8d9f0e300e95f5a4c8e3a7b45601a5e8d
-  ExpoMailComposer: d220c74a211bf703ddbd1a8aaf97c4e4d5329845
-  ExpoModulesCore: c18917c5a1e6e637e039d07069cebdc088b37475
-  ExpoModulesTestCore: 857e954f27e424f45157d2c43504e32af0f0d46d
-  ExpoNetwork: 885d63dbe37a77ae06652bcfb42afb2bb5bc4a7c
-  ExpoPrint: bcac9d36faaada5a6dd51dffbb4aa08f4f4514f2
-  ExpoRandom: 450083d54eb573d5eed11bb9cee2252933f02e87
-  ExpoScreenOrientation: 2cd1f9bcca5288196c6ed58c4410e2bd4235edcb
-  ExpoSecureStore: 8476999c3d6f7e37705aedc7a987f2b1d45164c6
-  ExpoSensors: 54491b67e9ebd486f923ccd6508f1ae4541c814f
-  ExpoSharing: 4cc060e992c6334da17ba05a7e8a60254cfe480f
-  ExpoSMS: 472f07a415ce52f32d25a8b1c3d02f6bf8d3af05
-  ExpoSpeech: 538590bbe4d72e70bde918b4cff62e006da3dadb
-  ExpoSQLite: 312f219f0a8137aec65760f59d859f89c34a8360
-  ExpoStoreReview: 0ba6078484c39e8cb23f30b13156f3f30e40d7ba
-  ExpoSystemUI: a37c7207c92098105fcf83e7ae290c38f7e3c07a
-  ExpoTrackingTransparency: b14d3e7946b36962ee87c8656be540d60ff70c5d
-  ExpoVideo: d02bcd2a3afa123dc4a7edfc2d0db6cb5177bd6a
-  ExpoVideoThumbnails: e04eb6c4a40b7ade09afa5ff9afdc6afc83602df
-  ExpoWebBrowser: 7eace712d903993a5962aa1a211a19be95f0d5a7
-  EXScreenCapture: bfbbabb3feff9839ee9c1d6bda1a827a866f8fbd
-  EXSplashScreen: 4823f5693944dedee7c4147567a548efb7100f2a
-  EXStructuredHeaders: d16bfeda62ccfea69015df87cb4d1d92528b02d7
-  EXTaskManager: 0f640aa791ebac6c38efd4842e54eb15cff06e28
-  EXUpdates: c0d8e690e25027c3e9e02da7ff9e918979e21f53
-  EXUpdatesInterface: 806249fbd771c72f015125166d756e1d71f3b905
-=======
-  EASClient: e40ec588adaaed075128bebdcd852e1fe749ea02
-  EXAV: 99e41d9fd39a5d17eb66d822197a249d80140d56
-  EXBarCodeScanner: 9d23a7823c1dda81249aa8d494bae6130e312ab1
-  EXBranch: 3abd983225b85532b79f257ca2c8f573b7d468c7
-  EXConstants: 1734e43270773c7e22c50492bcbd3c2557f4bf14
-  EXContacts: 49cadf80e7f1019821dde4a536960717f474dbeb
-  EXFont: f229885758944aad44348468d62a3493012decd6
-  EXImageLoader: 7f0a6f7534461787baf1c6c1140c6c13e89e82bb
-  EXJSONUtils: f201c0e92a2a835909714b9c60f6fd65dd01f785
-  EXLocation: 43aa0af2d612791245df41f86d0995c7380abd53
-  EXManifests: 04bba5e6b64da18ac13011c367316f203760dea8
-  EXMediaLibrary: 2b8d9f49a6c2523b4e0ae9557db05f1343ef820d
-  EXNotifications: c3d43ae880be510cd95d92cc63505383c66dd353
-  Expo: a0d8fe46ad02731a3f8df4bee9792154ad72bff1
-  ExpoAppleAuthentication: c6d8719247589d41c3ec89e8a822ecf0c4d56d51
-  ExpoApplication: 47646ff8a434290959a73f131cba7a96eba2be9e
-  ExpoBackgroundFetch: 6753a73c4c5e705c19f00e5bd69f7284a1f8f9f7
-  ExpoBattery: f7ecc6800108c14a1425d3e7ea49609a5e1cb013
-  ExpoBlur: 2e733ec3aa76653040b29a833984f128a293295a
-  ExpoBrightness: dfc8f9e9e936decbda6b1a332e7f7176f28377ab
-  ExpoCalendar: 829a79ed04c497ffd8f09e88f10a130ef48ed644
-  ExpoCamera: 377b2a9759cd86e455d6fb46b65b3eb6f8e29446
-  ExpoCellular: 1870591227bdb23b171490ea9ea06f504f2cb812
-  ExpoClipboard: 8f04af2957214af1e45a056b2331327721cd7168
-  ExpoCrypto: ebc31369538a8a56cc2a5d447c22318465e4f14f
-  ExpoDevice: 9587c3f5820c176dfaa861c5eff6cdcb67bd3e89
-  ExpoDocumentPicker: 630b37fedb2911064d33236cc93729bebe2cce5f
-  ExpoFileSystem: 9920645fb15201acac21ee631799ac9bfcad8479
-  ExpoGL: b0a5371872d1857fb6f154a0df7e41a72ed70465
-  ExpoHaptics: acdfbe0450cf8c8ce97b5801326d0dddbddf7048
-  ExpoHead: 625d2c4518d00ccc47cd7cbeb89975570ad57ba0
-  ExpoImage: 64cd716d10414edf59342de32043857a58e9a2a3
-  ExpoImageManipulator: 6c30083e367e83eb7719db833c225bfc2ae53fe4
-  ExpoImagePicker: d01668d6308e1b7bd50b530ee72187f62dcd1c48
-  ExpoKeepAwake: 1ced2ebbeb594a66462568a7b7d9ac06f88abe89
-  ExpoLinearGradient: 4c88e406b9c9ccefcc657943b26c9b1d72882c26
-  ExpoLocalAuthentication: dd96886ee4c50a0ec5b73bae5e929ea082a2e53e
-  ExpoLocalization: ac58dde8d9f0e300e95f5a4c8e3a7b45601a5e8d
-  ExpoMailComposer: d220c74a211bf703ddbd1a8aaf97c4e4d5329845
-  ExpoModulesCore: c18917c5a1e6e637e039d07069cebdc088b37475
-  ExpoModulesTestCore: 857e954f27e424f45157d2c43504e32af0f0d46d
-  ExpoNetwork: 885d63dbe37a77ae06652bcfb42afb2bb5bc4a7c
-  ExpoPrint: bcac9d36faaada5a6dd51dffbb4aa08f4f4514f2
-  ExpoRandom: 450083d54eb573d5eed11bb9cee2252933f02e87
-  ExpoScreenOrientation: 2cd1f9bcca5288196c6ed58c4410e2bd4235edcb
-  ExpoSecureStore: 8476999c3d6f7e37705aedc7a987f2b1d45164c6
-  ExpoSensors: 54491b67e9ebd486f923ccd6508f1ae4541c814f
-  ExpoSharing: 4cc060e992c6334da17ba05a7e8a60254cfe480f
-  ExpoSMS: 472f07a415ce52f32d25a8b1c3d02f6bf8d3af05
-  ExpoSpeech: 538590bbe4d72e70bde918b4cff62e006da3dadb
-  ExpoSQLite: 312f219f0a8137aec65760f59d859f89c34a8360
-  ExpoStoreReview: 0ba6078484c39e8cb23f30b13156f3f30e40d7ba
-  ExpoSystemUI: a37c7207c92098105fcf83e7ae290c38f7e3c07a
-  ExpoTrackingTransparency: b14d3e7946b36962ee87c8656be540d60ff70c5d
-  ExpoVideo: d02bcd2a3afa123dc4a7edfc2d0db6cb5177bd6a
-  ExpoVideoThumbnails: e04eb6c4a40b7ade09afa5ff9afdc6afc83602df
-  ExpoWebBrowser: 7eace712d903993a5962aa1a211a19be95f0d5a7
-  EXScreenCapture: bfbbabb3feff9839ee9c1d6bda1a827a866f8fbd
-  EXSplashScreen: 4823f5693944dedee7c4147567a548efb7100f2a
-  EXStructuredHeaders: d16bfeda62ccfea69015df87cb4d1d92528b02d7
-  EXTaskManager: 0f640aa791ebac6c38efd4842e54eb15cff06e28
-  EXUpdates: c0d8e690e25027c3e9e02da7ff9e918979e21f53
-  EXUpdatesInterface: 806249fbd771c72f015125166d756e1d71f3b905
->>>>>>> 8e3888e836 ([ios][calendar] fix pod files)
   FBAEMKit: 5facf4292bff062963f563d68fd5c0cdd6c90d63
   FBAudienceNetwork: 03e273f66b70756be7d060927111af97b7641b06
   FBLazyVector: 71803c074f6325f10b5ec891c443b6bbabef0ca7
@@ -2908,6 +2766,6 @@ SPEC CHECKSUMS:
   Yoga: 86fed2e4d425ee4c6eab3813ba1791101ee153c6
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
-PODFILE CHECKSUM: 2e2091adf6eb0d6921acab51e937558fd3a0e63d
+PODFILE CHECKSUM: 548074f79b4144edeae371a061bbe3a1aa0d8909
 
 COCOAPODS: 1.12.1
