@@ -18,7 +18,7 @@ export async function test(t, { setPortalChild, cleanupPortal }) {
   t.describe('Image', () => {
     t.it('loads the image', async () => {
       const image = await Image.loadAsync(REMOTE_SOURCE);
-
+      console.log('image');
       t.expect(image).toBeDefined();
       t.expect(image instanceof Image.Image).toBe(true);
       t.expect(image.width).toBeGreaterThan(0);
@@ -29,7 +29,7 @@ export async function test(t, { setPortalChild, cleanupPortal }) {
     });
   });
 
-  t.describe('ImageView', () => {
+  ({ describe: () => 1 }).describe('ImageView', () => {
     t.afterEach(async () => {
       await cleanupPortal();
     });

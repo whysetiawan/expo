@@ -2,11 +2,15 @@
 
 #include "JavaCallback.h"
 #include "JSIInteropModuleRegistry.h"
+#include <fbjni/fbjni.h>
+#include <fbjni/fbjni.h>
+#include <folly/dynamic.h>
 
 namespace expo {
 
 JavaCallback::JavaCallback(Callback callback)
   : callback(std::move(callback)) {}
+
 
 
 void JavaCallback::registerNatives() {
@@ -19,8 +23,29 @@ void JavaCallback::registerNatives() {
                    makeNativeMethod("invoke", JavaCallback::invokeString),
                    makeNativeMethod("invoke", JavaCallback::invokeArray),
                    makeNativeMethod("invoke", JavaCallback::invokeMap),
+                   makeNativeMethod("invoke", JavaCallback::invokeSharedRef)
                  });
 }
+
+void SharedRef::registerNatives() {
+  registerHybrid({
+                   makeNativeMethod("initHybrid", SharedRef::initHybrid)
+                 });
+}
+
+jni::local_ref<SharedRef::jhybriddata>
+SharedRef::initHybrid(jni::alias_ref<jhybridobject> jThis) {
+  return makeCxxInstance();
+}
+
+jni::local_ref<SharedRef::jhybriddata>
+SharedObjectId::initHybrid(jni::alias_ref<jhybridobject> jThis) {
+  return makeCxxInstance();
+}
+
+SharedRef::SharedRef() = default;
+
+SharedObjectId::SharedObjectId() = default;
 
 jni::local_ref<JavaCallback::javaobject> JavaCallback::newInstance(
   JSIInteropModuleRegistry *jsiInteropModuleRegistry,
@@ -62,4 +87,10 @@ void JavaCallback::invokeArray(jni::alias_ref<react::WritableNativeArray::javaob
 void JavaCallback::invokeMap(jni::alias_ref<react::WritableNativeMap::javaobject> result) {
   callback(result->cthis()->consume());
 }
+
+void JavaCallback::invokeSharedRef(jni::alias_ref<SharedRef::javaobject> result) {
+  callback(result->cthis()->sharedObjectId.value);
+}
+
+
 } // namespace expo

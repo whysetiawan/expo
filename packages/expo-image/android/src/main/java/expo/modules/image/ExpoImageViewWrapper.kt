@@ -46,7 +46,7 @@ class ExpoImageViewWrapper(context: Context, appContext: AppContext) : ExpoView(
   private val activity: Activity
     get() = appContext.currentActivity ?: throw MissingActivity()
 
-  internal val requestManager = getOrCreateRequestManager(appContext, activity)
+  internal val requestManager = ImageLoader.getOrCreateRequestManager(appContext, activity)
   private val progressListener = OkHttpProgressListener(WeakReference(this))
 
   private val firstView = ExpoImageView(activity)
@@ -584,36 +584,5 @@ class ExpoImageViewWrapper(context: Context, appContext: AppContext) : ExpoView(
     }
 
     addView(layout, matchParent)
-  }
-
-  companion object {
-    private var requestManager: RequestManager? = null
-    private var appContextRef: WeakReference<AppContext?> = WeakReference(null)
-    private var activityRef: WeakReference<Activity?> = WeakReference(null)
-
-    fun getOrCreateRequestManager(
-      appContext: AppContext,
-      activity: Activity
-    ): RequestManager = synchronized(Companion) {
-      val cachedRequestManager = requestManager
-        ?: return createNewRequestManager(activity).also {
-          requestManager = it
-          appContextRef = WeakReference(appContext)
-          activityRef = WeakReference(activity)
-        }
-
-      // Request manager was created using different activity or app context
-      if (appContextRef.get() != appContext || activityRef.get() != activity) {
-        return createNewRequestManager(activity).also {
-          requestManager = it
-          appContextRef = WeakReference(appContext)
-          activityRef = WeakReference(activity)
-        }
-      }
-
-      return cachedRequestManager
-    }
-
-    private fun createNewRequestManager(activity: Activity): RequestManager = Glide.with(activity)
   }
 }

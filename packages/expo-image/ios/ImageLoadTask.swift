@@ -1,26 +1,22 @@
-// Copyright 2023-present 650 Industries. All rights reserved.
+import expo.modules.core.interfaces.SharedObject
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
-import ExpoModulesCore
+internal class ImageLoadTask(private val source: ImageSource) : SharedObject() {
+    private var task: Task<UIImage?, Never>? = null
 
-internal final class ImageLoadTask: SharedObject {
-  private let source: ImageSource
-  private var task: Task<UIImage?, Never>?
-
-  init(_ source: ImageSource) {
-    self.source = source
-    super.init()
-  }
-
-  func load() async -> UIImage? {
-    if task == nil {
-      task = Task {
-        return await ImageLoader.shared.load(source)
-      }
+    suspend fun load(): UIImage? = suspendCoroutine { continuation ->
+        if (task == null) {
+            task = Task {
+                ImageLoader.shared.load(source).also { result ->
+                    continuation.resume(result)
+                }
+            }
+        }
+        continuation.resume(task?.value)
     }
-    return await task?.value
-  }
 
-  func abort() {
-    task?.cancel()
-  }
+    fun abort() {
+        task?.cancel()
+    }
 }

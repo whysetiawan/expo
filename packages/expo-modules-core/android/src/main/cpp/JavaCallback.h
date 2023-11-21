@@ -9,11 +9,49 @@
 
 #include <react/jni/WritableNativeArray.h>
 #include <react/jni/WritableNativeMap.h>
+#include <fbjni/detail/CoreClasses.h>
 
 namespace jni = facebook::jni;
 namespace react = facebook::react;
 
 namespace expo {
+
+struct SharedObjectId : public jni::HybridClass<SharedObjectId> {
+  static constexpr const char *kJavaDescriptor = "Lexpo/modules/kotlin/sharedobjects/SharedObjectId;";
+
+  SharedObjectId();
+//  SharedObjectId(folly::dynamic &&val);
+
+  RN_EXPORT int value;
+
+  static jni::local_ref<jhybriddata> initHybrid(jni::alias_ref<jhybridobject> jThis);
+
+//   static void registerNatives();
+  private:
+    friend HybridBase;
+};
+
+struct SharedRef : public jni::HybridClass<SharedRef, SharedObjectId> {
+  static constexpr const char *kJavaDescriptor = "Lexpo/modules/kotlin/sharedobjects/SharedRef;";
+
+
+
+//  static jni::local_ref<jhybriddata> initHybrid(jni::alias_ref<jhybridobject> jThis);
+
+  SharedRef();
+//  SharedRef(folly::dynamic &&val);
+
+
+  SharedObjectId sharedObjectId;
+
+  static jni::local_ref<jhybriddata> initHybrid(jni::alias_ref<jhybridobject> jThis);
+  static void registerNatives();
+
+  private:
+    friend HybridBase;
+
+};
+
 class JSIInteropModuleRegistry;
 
 class JavaCallback : public jni::HybridClass<JavaCallback, Destructible> {
@@ -53,6 +91,9 @@ private:
 
   void invokeMap(jni::alias_ref<react::WritableNativeMap::javaobject> result);
 
+  void invokeSharedRef(jni::alias_ref<SharedRef::javaobject> result);
+
   Callback callback;
+
 };
 } // namespace expo

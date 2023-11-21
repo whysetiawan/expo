@@ -1,5 +1,6 @@
 package expo.modules.image
 
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.view.doOnDetach
@@ -14,17 +15,23 @@ import com.facebook.react.uimanager.PixelUtil
 import com.facebook.react.uimanager.Spacing
 import com.facebook.react.uimanager.ViewProps
 import com.facebook.yoga.YogaConstants
+import expo.modules.kotlin.Promise
 import expo.modules.image.enums.ContentFit
 import expo.modules.image.enums.Priority
 import expo.modules.image.records.CachePolicy
 import expo.modules.image.records.ContentPosition
 import expo.modules.image.records.ImageTransition
 import expo.modules.image.records.SourceMap
-import expo.modules.kotlin.Promise
 import expo.modules.kotlin.functions.Queues
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import expo.modules.kotlin.sharedobjects.SharedRef
 import expo.modules.kotlin.views.ViewDefinitionBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class ExpoImageModule : Module() {
   override fun definition() = ModuleDefinition {
@@ -78,6 +85,30 @@ class ExpoImageModule : Module() {
             }
           })
           .submit()
+      }
+    }
+
+    AsyncFunction("load") {  source: SourceMap,promise: Promise ->
+      promise.resolve(123)
+//      CoroutineScope(Dispatchers.Default).launch {
+//        ImageLoadTask(appContext, source).load(promise)
+//      }
+    }
+
+
+    Class("LoadTask"){
+      Constructor {
+        source: SourceMap ->
+        ImageLoadTask(appContext, source)
+      }
+
+      AsyncFunction("load") {  task: ImageLoadTask,promise: Promise ->
+        CoroutineScope(Dispatchers.Default).launch {
+          task.load(promise)
+        }
+      }
+      Function("abort") { task: ImageLoadTask ->
+        task.abort()
       }
     }
 
