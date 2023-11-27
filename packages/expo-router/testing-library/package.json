@@ -1,0 +1,4 @@
+{
+  "main": "../build/testing-library",
+  "types": "../build/testing-library"
+}

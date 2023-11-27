@@ -37,8 +37,7 @@
     "server.d.ts",
     "tabs.js",
     "tabs.d.ts",
-    "testing-library.js",
-    "testing-library.d.ts"
+    "testing-library"
   ],
   "repository": {
     "url": "https://github.com/expo/expo.git",
