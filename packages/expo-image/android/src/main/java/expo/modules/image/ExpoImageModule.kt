@@ -89,28 +89,30 @@ class ExpoImageModule : Module() {
     }
 
     AsyncFunction("load") {  source: SourceMap,promise: Promise ->
-      promise.resolve(123)
-//      CoroutineScope(Dispatchers.Default).launch {
-//        ImageLoadTask(appContext, source).load(promise)
+
+      CoroutineScope(Dispatchers.Main).launch {
+        ImageLoadTask(appContext, source).load(promise)
+      }
+    }
+
+    Class("Image") {
+    }
+
+//    Class("LoadTask"){
+//      Constructor {
+//        source: SourceMap ->
+//        ImageLoadTask(appContext, source)
 //      }
-    }
-
-
-    Class("LoadTask"){
-      Constructor {
-        source: SourceMap ->
-        ImageLoadTask(appContext, source)
-      }
-
-      AsyncFunction("load") {  task: ImageLoadTask,promise: Promise ->
-        CoroutineScope(Dispatchers.Default).launch {
-          task.load(promise)
-        }
-      }
-      Function("abort") { task: ImageLoadTask ->
-        task.abort()
-      }
-    }
+//
+//      AsyncFunction("load") {  task: ImageLoadTask,promise: Promise ->
+//        CoroutineScope(Dispatchers.Default).launch {
+//          task.load(promise)
+//        }
+//      }
+//      Function("abort") { task: ImageLoadTask ->
+//        task.abort()
+//      }
+//    }
 
     AsyncFunction("clearMemoryCache") {
       val activity = appContext.currentActivity ?: return@AsyncFunction false

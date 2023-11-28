@@ -155,6 +155,26 @@ std::shared_ptr<jsi::Object> JavaScriptModuleObject::getJSIObject(jsi::Runtime &
     // Evaluate the code and obtain returned value (the constructor function).
     jsi::Object klass = runtime.evaluateJavaScript(sourceBuffer, "").asObject(runtime);
 
+
+
+
+
+    // ALEK: REGISTER CLASS
+
+//    auto deleter = [](jsi::Object* object) { /* custom cleanup logic */ };
+//
+//    std::shared_ptr<jsi::Object> klassSharedPtr(&klass, deleter);
+//    auto jsThisObject = JavaScriptObject::newInstance(
+//      jsiInteropModuleRegistry,
+//      jsiInteropModuleRegistry->runtimeHolder,
+//      klassSharedPtr
+//    );
+//    auto native = classRef.get();
+//    jsiInteropModuleRegistry->registerClass(jni::make_local(native), jsThisObject);
+
+    /// END REGISTER CLASS
+
+
     // Set the native constructor in the prototype.
     jsi::Object prototype = klass.getPropertyAsObject(runtime, "prototype");
     jsi::PropNameID nativeConstructorPropId = jsi::PropNameID::forAscii(runtime,
@@ -173,6 +193,8 @@ std::shared_ptr<jsi::Object> JavaScriptModuleObject::getJSIObject(jsi::Runtime &
         auto thisObject = std::make_shared<jsi::Object>(thisValue.asObject(runtime));
         decorateObjectWithProperties(runtime, jsiInteropModuleRegistry, thisObject.get(),
                                      classObject);
+
+
         try {
           JNIEnv *env = jni::Environment::current();
           /**

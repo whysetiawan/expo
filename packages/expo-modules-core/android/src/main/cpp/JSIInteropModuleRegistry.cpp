@@ -190,6 +190,40 @@ void JSIInteropModuleRegistry::registerSharedObject(
   method(javaPart_, std::move(native), std::move(js));
 }
 
+//void JSIInteropModuleRegistry::getSharedObject(
+//  jni::local_ref<jobject> native,
+//  jni::local_ref<JavaScriptObject::javaobject> js
+//) {
+//  const static auto method = expo::JSIInteropModuleRegistry::javaClassLocal()
+//    ->getMethod<void(jni::local_ref<jobject>, jni::local_ref<JavaScriptObject::javaobject>)>(
+//      "registerSharedObject"
+//    );
+//  method(javaPart_, std::move(native), std::move(js));
+//}
+
+void JSIInteropModuleRegistry::registerClass(
+  jni::local_ref<jobject> native,
+  jni::local_ref<JavaScriptObject::javaobject> jsClass
+) {
+  const static auto method = expo::JSIInteropModuleRegistry::javaClassLocal()
+    ->getMethod<void(jni::local_ref<jobject>, jni::local_ref<JavaScriptObject::javaobject>)>(
+      "registerClass"
+    );
+  method(javaPart_, std::move(native), std::move(jsClass));
+}
+
+// dopisać geta
+
+void JSIInteropModuleRegistry::getJavascriptClass(
+  jni::local_ref<jobject> native
+) {
+  const static auto method = expo::JSIInteropModuleRegistry::javaClassLocal()
+    ->getMethod<void(jni::local_ref<jobject>)>(
+      "getJavascriptClass"
+    );
+  method(javaPart_, std::move(native));
+}
+
 void JSIInteropModuleRegistry::jniWasDeallocated() {
   wasDeallocated = true;
 }

@@ -22,7 +22,7 @@ struct SharedObjectId : public jni::HybridClass<SharedObjectId> {
   SharedObjectId();
 //  SharedObjectId(folly::dynamic &&val);
 
-  RN_EXPORT int value;
+  RN_EXPORT int value{};
 
   static jni::local_ref<jhybriddata> initHybrid(jni::alias_ref<jhybridobject> jThis);
 
@@ -54,13 +54,33 @@ struct SharedRef : public jni::HybridClass<SharedRef, SharedObjectId> {
 
 class JSIInteropModuleRegistry;
 
+struct CallbackArgUnion {
+  folly::dynamic* dynamicArg;
+  jni::global_ref<SharedRef::javaobject> sharedRefArg;
+//  ~CallbackArgUnion() {}
+//  CallbackArgUnion() {}
+};
+
+enum CallbackArgType {
+  DYNAMIC,
+  SHARED_REF,
+};
+
+struct CallbackArg
+{
+  CallbackArgType type;
+  CallbackArgUnion arg;
+};
+
+
+
 class JavaCallback : public jni::HybridClass<JavaCallback, Destructible> {
 public:
   static auto constexpr
     kJavaDescriptor = "Lexpo/modules/kotlin/jni/JavaCallback;";
   static auto constexpr TAG = "JavaCallback";
 
-  using Callback = std::function<void(folly::dynamic)>;
+  using Callback = std::function<void(CallbackArg*)>;
 
   static void registerNatives();
 
@@ -69,8 +89,11 @@ public:
     Callback callback
   );
 
+  static JSIInteropModuleRegistry *jsiRegistry_;
+
 private:
   friend HybridBase;
+
 
 
   JavaCallback(Callback callback);

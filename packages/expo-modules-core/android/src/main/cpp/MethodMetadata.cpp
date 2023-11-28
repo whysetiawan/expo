@@ -13,6 +13,9 @@
 
 #include "JSReferencesCache.h"
 
+#import <sstream>
+#include <syslog.h>
+
 namespace jni = facebook::jni;
 namespace jsi = facebook::jsi;
 namespace react = facebook::react;
@@ -40,14 +43,15 @@ jni::local_ref<JavaCallback::JavaPart> createJavaCallbackFromJSIFunction(
   auto callbackWrapperOwner =
     std::make_shared<react::RAIICallbackWrapperDestroyer>(weakWrapper);
 
-  std::function<void(folly::dynamic)> fn =
+  std::function<void(CallbackArg*)> fn =
     [
       weakWrapper,
       callbackWrapperOwner = std::move(callbackWrapperOwner),
       wrapperWasCalled = false,
-      isRejectCallback
+      isRejectCallback,
+      &moduleRegistry
     ](
-      folly::dynamic responses) mutable {
+      CallbackArg* responses) mutable {
       if (wrapperWasCalled) {
         throw std::runtime_error(
           "callback 2 arg cannot be called more than once");
@@ -62,13 +66,29 @@ jni::local_ref<JavaCallback::JavaPart> createJavaCallbackFromJSIFunction(
         [
           weakWrapper,
           callbackWrapperOwner = std::move(callbackWrapperOwner),
-          responses = std::move(responses),
+          responses = responses,
           isRejectCallback
-        ]() mutable {
+        , &moduleRegistry]() mutable {
           auto strongWrapper2 = weakWrapper.lock();
           if (!strongWrapper2) {
             return;
           }
+//            syslog(LOG_INFO, "callback 2 arg called dynamic", responses->dynamicArg);
+//          syslog(LOG_INFO, "callback 2 arg called", responses->classArg);
+          if(responses->type == CallbackArgType::DYNAMIC) {
+            folly::dynamic follyObject = std::move(*responses->arg.dynamicArg);
+            jsi::Value arg = jsi::valueFromDynamic(strongWrapper2->runtime(), follyObject);
+            if (!isRejectCallback) {
+              strongWrapper2->callback().call(
+                strongWrapper2->runtime(),
+                (const jsi::Value *) &arg,
+                (size_t) 1
+              );
+            } else {
+              auto &rt = strongWrapper2->runtime();
+              auto jsErrorObject = arg.getObject(rt);
+              auto errorCode = jsErrorObject.getProperty(rt, "code").asString(rt);
+              auto message = jsErrorObject.getProperty(rt, "message").asString(rt);
 
           jsi::Value arg = jsi::valueFromDynamic(strongWrapper2->runtime(), responses);
           auto enhancedArg = decorateValueForDynamicExtension(strongWrapper2->runtime(), arg);
@@ -87,18 +107,65 @@ jni::local_ref<JavaCallback::JavaPart> createJavaCallbackFromJSIFunction(
             auto errorCode = jsErrorObject.getProperty(rt, "code").asString(rt);
             auto message = jsErrorObject.getProperty(rt, "message").asString(rt);
 
-            auto codedError = makeCodedError(
-              rt,
-              std::move(errorCode),
-              std::move(message)
-            );
+              strongWrapper2->callback().call(
+                strongWrapper2->runtime(),
+                (const jsi::Value *) &codedError,
+                (size_t) 1
+              );
+            }
+          }
+          else if(responses->type == CallbackArgType::SHARED_REF) {
+            auto &rt = strongWrapper2->runtime();
+            auto native = jni::make_local(responses->arg.sharedRefArg);
+            if (native == nullptr) {
+              auto undefined = jsi::Value::undefined();
+              strongWrapper2->callback().call(
+                strongWrapper2->runtime(),
+                (const jsi::Value *) &undefined,
+                (size_t) 1
+              );
+              return;
+            }
+//            auto jsModules = strongWrapper2->runtime().global().getProperty(rt, "ExpoModules").asObject(rt);
+//
+////            auto jsObject = jsModules.getProperty(rt, "ExpoImage").asObject(rt).getProperty(rt,"Image")
+////              .asObject(rt).asFunction(rt).callAsConstructor(rt).asObject(rt);
+//auto emptyJsObject = jsi::Object::createFromHostObject(rt, );
+//            auto jsObject = valueFromDynamic(rt, folly::dynamic::object());
+            auto objSharedPtr = std::make_shared<jsi::Object>(jsi::Object(rt));
+            // registry
+//            std::shared_ptr<jsi::Object> objSharedPtr(&jsSharedRef, [](jsi::Object*) {
+//              // Custom deleter function, you can add any necessary cleanup code here
+//              // For example, if there are specific steps required to release the 'Object'
+//              // resources, you can perform them within this lambda function
+//            });
+//            moduleRegistry->runtimeHolder->
+            auto deallocated = moduleRegistry->wasDeallocated;
+            moduleRegistry->runtimeHolder->evaluateScript("console.log()");
+            auto jsObject2 = JavaScriptObject::newInstance(moduleRegistry, moduleRegistry->runtimeHolder , objSharedPtr);
+            jni::local_ref<JavaScriptObject::javaobject> jsRef = jni::make_local(jsObject2);
+            moduleRegistry->registerSharedObject(native, jsRef);
+
+
+
+
 
             strongWrapper2->callback().call(
               strongWrapper2->runtime(),
-              (const jsi::Value *) &codedError,
+              (const jsi::Value *) &jsObject2,
               (size_t) 1
             );
+            //.asObject(rt)
+//            responses->arg.sharedRefArg
+//            moduleRegistry->getJavascriptClass(responses->arg.sharedRefArg);
+//            std::stringstream source;
+//            strongWrapper2->runtime()
+//            source << "new global.ExpoModules.ExpoImage.Image()"; // new global.ExpoModulesCore.ExpoImage.Image();
+//            std::shared_ptr<jsi::StringBuffer> sourceBuffer = std::make_shared<jsi::StringBuffer>(source.str());
+//            jsi::Object klass = strongWrapper2->runtime().evaluateJavaScript(sourceBuffer, "").asObject(strongWrapper2->runtime());
           }
+
+
 
           callbackWrapperOwner.reset();
         });

@@ -8,8 +8,12 @@
 
 namespace expo {
 
+
+
 JavaCallback::JavaCallback(Callback callback)
   : callback(std::move(callback)) {}
+
+JSIInteropModuleRegistry* JavaCallback::jsiRegistry_ = nullptr;
 
 
 
@@ -52,44 +56,108 @@ jni::local_ref<JavaCallback::javaobject> JavaCallback::newInstance(
   Callback callback
 ) {
   auto object = JavaCallback::newObjectCxxArgs(std::move(callback));
+  jsiRegistry_ = jsiInteropModuleRegistry;
   jsiInteropModuleRegistry->jniDeallocator->addReference(object);
   return object;
 }
 
 void JavaCallback::invoke() {
-  callback(nullptr);
+  auto* callbackArg = new CallbackArg;
+  callbackArg->type = CallbackArgType::DYNAMIC;
+  auto dynObj = std::make_unique<folly::dynamic>(nullptr);
+  callbackArg->type = CallbackArgType::DYNAMIC;
+  callbackArg->arg.dynamicArg = dynObj.release();
+  callback(callbackArg);
 }
 
 void JavaCallback::invokeBool(bool result) {
-  callback(result);
+  auto* callbackArg = new CallbackArg;
+  auto dynObj = std::make_unique<folly::dynamic>(result);
+  callbackArg->type = CallbackArgType::DYNAMIC;
+  callbackArg->arg.dynamicArg = dynObj.release();
+  callback(callbackArg);
 }
 
 void JavaCallback::invokeInt(int result) {
-  callback(result);
+  auto* callbackArg = new CallbackArg;
+  auto dynObj = std::make_unique<folly::dynamic>(result);
+  callbackArg->type = CallbackArgType::DYNAMIC;
+  callbackArg->arg.dynamicArg = dynObj.release();
+  callback(callbackArg);
 }
 
 void JavaCallback::invokeDouble(double result) {
-  callback(result);
+  auto* callbackArg = new CallbackArg;
+  auto dynObj = std::make_unique<folly::dynamic>(result);
+  callbackArg->type = CallbackArgType::DYNAMIC;
+  callbackArg->arg.dynamicArg = dynObj.release();
+  callback(callbackArg);
 }
 
 void JavaCallback::invokeFloat(float result) {
-  callback(result);
+  auto* callbackArg = new CallbackArg;
+  auto dynObj = std::make_unique<folly::dynamic>(result);
+  callbackArg->type = CallbackArgType::DYNAMIC;
+  callbackArg->arg.dynamicArg = dynObj.release();
+  callback(callbackArg);
 }
 
 void JavaCallback::invokeString(jni::alias_ref<jstring> result) {
-  callback(result->toStdString());
+  auto* callbackArg = new CallbackArg;
+  auto dynObj = std::make_unique<folly::dynamic>(result->toStdString());
+  callbackArg->type = CallbackArgType::DYNAMIC;
+  callbackArg->arg.dynamicArg = dynObj.release();
+  callback(callbackArg);
 }
 
 void JavaCallback::invokeArray(jni::alias_ref<react::WritableNativeArray::javaobject> result) {
-  callback(result->cthis()->consume());
+  auto* callbackArg = new CallbackArg;
+  auto dynObj = std::make_unique<folly::dynamic>(result->cthis()->consume());
+  callbackArg->type = CallbackArgType::DYNAMIC;
+  callbackArg->arg.dynamicArg = dynObj.release();
+  callback(callbackArg);
 }
 
 void JavaCallback::invokeMap(jni::alias_ref<react::WritableNativeMap::javaobject> result) {
-  callback(result->cthis()->consume());
+  auto* callbackArg = new CallbackArg;
+  auto dynObj = std::make_unique<folly::dynamic>(result->cthis()->consume());
+  callbackArg->type = CallbackArgType::DYNAMIC;
+  callbackArg->arg.dynamicArg = dynObj.release();
+  callback(callbackArg);
 }
 
 void JavaCallback::invokeSharedRef(jni::alias_ref<SharedRef::javaobject> result) {
-  callback(result->cthis()->sharedObjectId.value);
+  auto* callbackArg = new CallbackArg;
+
+  callbackArg->type = CallbackArgType::SHARED_REF;
+
+  // converting to strong ref
+  auto strongRef = jni::make_global(result);
+  auto strongRef2 = strongRef;
+  callbackArg->arg.sharedRefArg = strongRef2;
+
+  callback(callbackArg);
+
+
+//  folly::dynamic myDynamicObject = folly::dynamic::object();
+//
+//  // Add keys and values to the dynamic object
+//  myDynamicObject["value"] = result->cthis()->sharedObjectId.value;
+//  myDynamicObject["type"] = "sharedRef";
+
+//jsiRegistry_->createObject();
+//  auto &rt = jsiRegistry_->runtimeHolder->get();
+//  rt.evaluateJavaScript()
+//  auto jsObject = std::make_shared<jsi::Object>(rt);
+//  auto jsObjectRef = JavaScriptObject::newInstance(
+//    jsiRegistry_,
+//    jsiRegistry_->runtimeHolder,
+//    jsObject
+//  );
+//  jsiRegistry_->registerSharedObject(jni::make_local(result),jsObjectRef);
+//callback(myDynamicObject);
+//  moduleRegistry->registerSharedObject(jni::make_local(unpackedValue), jsObjectRef);
+//  callback(jsObjectRef->cthis());
 }
 
 

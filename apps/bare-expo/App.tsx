@@ -9,6 +9,8 @@ try {
   // do nothing
 }
 
+console.log(new global.ExpoModules.ExpoImage.Image());
+
 const loadAssetsAsync =
   optionalRequire(() => require('native-component-list/src/utilities/loadAssetsAsync')) ??
   (async () => null);

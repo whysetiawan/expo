@@ -111,6 +111,10 @@ public:
   jni::global_ref<JNIDeallocator::javaobject> jniDeallocator;
 
   bool wasDeallocated = false;
+
+  void registerClass(jni::local_ref<jobject> native,jni::local_ref<JavaScriptObject::javaobject> jsClass);
+  void getJavascriptClass(jni::local_ref<jobject> native);
+
 private:
   friend HybridBase;
   jni::global_ref<JSIInteropModuleRegistry::javaobject> javaPart_;
@@ -127,5 +131,6 @@ private:
   inline bool callHasModule(const std::string &moduleName) const;
 
   void jniWasDeallocated();
+
 };
 } // namespace expo
