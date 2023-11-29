@@ -79,12 +79,15 @@ describe(`manifest`, () => {
       const UnimodulesCore = jest.requireActual('expo-modules-core');
       return {
         ...UnimodulesCore,
-        NativeModulesProxy: {
-          ...(UnimodulesCore.NativeModulesProxy ?? {}),
-          ExpoUpdates: {
-            ...(UnimodulesCore.NativeModulesProxy?.ExpoUpdates ?? {}),
+        requireOptionalNativeModule: (moduleName) => {
+          if (moduleName !== 'ExpoUpdates') {
+            return jest.requireActual('expo-modules-core').requireOptionalNativeModule(moduleName);
+          }
+
+          return {
+            ...jest.requireActual('expo-modules-core').requireOptionalNativeModule('ExpoUpdates'),
             ...mockValues,
-          },
+          };
         },
       };
     });
