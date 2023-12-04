@@ -1,4 +1,4 @@
-import { writeFile, readFile, mkdir } from 'fs/promises';
+import { writeFile, readFile } from 'fs/promises';
 import { join } from 'path';
 
 type Fixture = {
@@ -24,7 +24,6 @@ const fixtures: Record<string, Fixture> = {
 };
 
 export default async function () {
-  // await mkdir(join(__dirname, './fixtures/'), { force: true });
   const template = await readFile(join(__dirname, '../../types/expo-router.d.ts'), 'utf8');
   await Promise.all(
     Object.entries(fixtures).map(async ([key, value]) => {
