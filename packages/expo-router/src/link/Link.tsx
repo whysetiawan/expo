@@ -60,9 +60,11 @@ function useInteropClassName(props: { style?: TextProps['style']; className?: st
 }
 
 const useHrefAttrs = Platform.select<
-  (props: Partial<ExpoRouter.LinkProps>) => { hrefAttrs?: any } & Partial<ExpoRouter.LinkProps>
+  <T = string>(
+    props: Partial<ExpoRouter.LinkProps<T>>
+  ) => { hrefAttrs?: any } & Partial<ExpoRouter.LinkProps>
 >({
-  web: function useHrefAttrs({ asChild, rel, target, download }: Partial<ExpoRouter.LinkProps>) {
+  web: function useHrefAttrs({ asChild, rel, target, download }) {
     return React.useMemo(() => {
       const hrefAttrs = {
         rel,

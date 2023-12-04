@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-declare namespace ExpoRouter {
+
   import type { ReactNode } from 'react';
   import type { TextProps, GestureResponderEvent } from 'react-native';
 
-  type StaticRoutes = string;
-  type DynamicRoutes<T extends string> = string;
-  type DynamicRouteTemplate = never;
+  type StaticRoutes = `/apple` | `/banana`;
+  type DynamicRoutes<T extends string> = `/colors/${SingleRoutePart<T>}` | `/animals/${CatchAllRoutePart<T>}` | `/mix/${SingleRoutePart<T>}/${SingleRoutePart<T>}/${CatchAllRoutePart<T>}`;
+  type DynamicRouteTemplate = `/colors/[color]` | `/animals/[...animal]` | `/mix/[fruit]/[color]/[...animals]`;
 
   export type RelativePathString = `./${string}` | `../${string}` | '..';
   export type AbsoluteRoute = DynamicRouteTemplate | StaticRoutes;
@@ -186,7 +186,7 @@ declare namespace ExpoRouter {
   };
 
   /** The imperative router. */
-  export const router: Router;
+  export declare const router: Router;
 
   /************
    * <Link /> *
@@ -243,7 +243,7 @@ declare namespace ExpoRouter {
     download?: string;
   }
 
-  export interface LinkProps<T = string> extends Omit<TextProps, 'href'>, WebAnchorProps {
+  export interface LinkProps<T> extends Omit<TextProps, 'href'>, WebAnchorProps {
     /** Path to route to. */
     href: Href<T>;
 
@@ -276,17 +276,16 @@ declare namespace ExpoRouter {
    * @param props.children Child elements to render the content.
    * @param props.className On web, this sets the HTML \`class\` directly. On native, this can be used with CSS interop tools like Nativewind.
    */
-  export const Link: LinkComponent;
+  export declare const Link: LinkComponent;
 
   /** Redirects to the href as soon as the component is mounted. */
-  export const Redirect: <T>(props: React.PropsWithChildren<{ href: Href<T> }>) => ReactNode;
-  export type Redirect = typeof Redirect;
+  export declare const Redirect: <T>(props: React.PropsWithChildren<{ href: Href<T> }>) => ReactNode;
 
   /**
    * Hooks
    */
 
-  export function useRouter(): Router;
+  export declare function useRouter(): Router;
   type useRouter = typeof useRouter;
 
   /**
@@ -296,7 +295,7 @@ declare namespace ExpoRouter {
    * To observe updates even when the invoking route is not focused, use \`useGlobalSearchParams()\`.
    * @see \`useGlobalSearchParams\`
    */
-  export function useLocalSearchParams<
+  export declare function useLocalSearchParams<
     TParams extends AllRoutes | UnknownOutputParams = UnknownOutputParams,
   >(): TParams extends AllRoutes ? SearchParams<TParams> : TParams;
   type useLocalSearchParams = typeof useLocalSearchParams;
@@ -310,7 +309,7 @@ declare namespace ExpoRouter {
    *
    * @see \`useLocalSearchParams\`
    */
-  export function useGlobalSearchParams<
+  export declare function useGlobalSearchParams<
     T extends AllRoutes | UnknownOutputParams = UnknownOutputParams,
   >(): T extends AllRoutes ? SearchParams<T> : T;
   type useGlobalSearchParams = typeof useGlobalSearchParams;
@@ -334,8 +333,7 @@ declare namespace ExpoRouter {
    * const [first, second] = useSegments<['settings'] | ['[user]'] | ['[user]', 'followers']>()
    * \`\`\`
    */
-  export function useSegments<
+  export declare function useSegments<
     T extends AbsoluteRoute | RouteSegments<AbsoluteRoute> | RelativePathString,
   >(): T extends AbsoluteRoute ? RouteSegments<T> : T extends string ? string[] : T;
   type useSegments = typeof useSegments;
-}
