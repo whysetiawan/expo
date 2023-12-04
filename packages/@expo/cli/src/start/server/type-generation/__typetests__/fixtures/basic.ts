@@ -218,24 +218,55 @@ export declare const Redirect: <T>(
   props: React.PropsWithChildren<{ href: Href<T> }>
 ) => JSX.Element;
 
-/************
- * Hooks *
- ************/
+/**
+ * Hooks
+ */
+
 export declare function useRouter(): Router;
 
-export declare function useLocalSearchParams<
-  T extends AllRoutes | UnknownOutputParams = UnknownOutputParams,
->(): T extends AllRoutes ? SearchParams<T> : T;
+/**
+ * Returns the URL search parameters for the contextually focused route. e.g. `/acme?foo=bar` -> `{ foo: "bar" }`.
+ * This is useful for stacks where you may push a new screen that changes the query parameters.
+ *
+ * To observe updates even when the invoking route is not focused, use `useGlobalSearchParams()`.
+ */
+export declare function useLocalSearchParams<TParams extends AllRoutes | UnknownOutputParams = UnknownOutputParams>(): T extends AllRoutes ? SearchParams<T> : T;
 
 /** @deprecated renamed to `useGlobalSearchParams` */
 export declare function useSearchParams<
   T extends AllRoutes | UnknownOutputParams = UnknownOutputParams,
 >(): T extends AllRoutes ? SearchParams<T> : T;
 
-export declare function useGlobalSearchParams<
-  T extends AllRoutes | UnknownOutputParams = UnknownOutputParams,
->(): T extends AllRoutes ? SearchParams<T> : T;
 
-export declare function useSegments<
-  T extends AbsoluteRoute | RouteSegments<AbsoluteRoute> | RelativePathString,
->(): T extends AbsoluteRoute ? RouteSegments<T> : T extends string ? string[] : T;
+/**
+ * Get the globally selected query parameters, including dynamic path segments. This function will update even when the route is not focused.
+ * Useful for analytics or other background operations that don't draw to the screen.
+ *
+ * When querying search params in a stack, opt-towards using `useLocalSearchParams` as these will only
+ * update when the route is focused.
+ *
+ * @see `useLocalSearchParams`
+ */
+export declare function useGlobalSearchParams<T extends AllRoutes | UnknownOutputParams = UnknownOutputParams>(): T extends AllRoutes ? SearchParams<T> : T;
+
+
+/**
+ * Get a list of selected file segments for the currently selected route. Segments are not normalized, so they will be the same as the file path. e.g. /[id]?id=normal -> ["[id]"]
+ *
+ * `useSegments` can be typed using an abstract.
+ * Consider the following file structure, and strictly typed `useSegments` function:
+ *
+ * ```md
+ * - app
+ *   - [user]
+ *     - index.js
+ *     - followers.js
+ *   - settings.js
+ * ```
+ * This can be strictly typed using the following abstract:
+ *
+ * ```ts
+ * const [first, second] = useSegments<['settings'] | ['[user]'] | ['[user]', 'followers']>()
+ * ```
+ */
+export declare function useSegments<T extends AbsoluteRoute | RouteSegments<AbsoluteRoute> | RelativePathString>(): T extends AbsoluteRoute ? RouteSegments<T> : T extends string ? string[] : T;

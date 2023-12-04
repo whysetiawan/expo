@@ -1,10 +1,7 @@
-export type Href = string | HrefObject;
-export interface HrefObject {
-    /** Path representing the selected route `/[id]`. */
-    pathname?: string;
-    /** Query parameters for the path. */
-    params?: Record<string, any>;
-}
+/// <reference types="../types/expo-router" />
 /** Resolve an href object into a fully qualified, relative href. */
-export declare const resolveHref: (href: Href) => string;
+export declare const resolveHref: (href: ExpoRouter.Href<string | {
+    pathname: string;
+    params: any;
+}>) => string;
 //# sourceMappingURL=href.d.ts.map

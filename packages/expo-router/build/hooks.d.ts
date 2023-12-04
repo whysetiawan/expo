@@ -1,9 +1,8 @@
-import { Router } from './types';
-type SearchParams = Record<string, string | string[]>;
+/// <reference types="../types/expo-router" />
 export declare function useRootNavigationState(): import("./fork/getStateFromPath").ResultState;
 export declare function useRouteInfo(): import("./LocationProvider").UrlObject;
 export declare function useRootNavigation(): import("@react-navigation/native").NavigationContainerRef<ReactNavigation.RootParamList> | null;
-export declare function useRouter(): Router;
+export declare const useRouter: ExpoRouter.useRouter;
 /**
  * @private
  * @returns the current global pathname with query params attached. This may change in the future to include the hostname from a predefined universal link, i.e. `/foobar?hey=world` becomes `https://acme.dev/foobar?hey=world`
@@ -28,7 +27,7 @@ export declare function useUnstableGlobalHref(): string;
  * const [first, second] = useSegments<['settings'] | ['[user]'] | ['[user]', 'followers']>()
  * ```
  */
-export declare function useSegments<TSegments extends string[] = string[]>(): TSegments;
+export declare const useSegments: ExpoRouter.useSegments;
 /** @returns global selected pathname without query parameters. */
 export declare function usePathname(): string;
 /**
@@ -40,13 +39,12 @@ export declare function usePathname(): string;
  *
  * @see `useLocalSearchParams`
  */
-export declare function useGlobalSearchParams<TParams extends SearchParams = SearchParams>(): Partial<TParams>;
+export declare const useGlobalSearchParams: ExpoRouter.useGlobalSearchParams;
 /**
  * Returns the URL search parameters for the contextually focused route. e.g. `/acme?foo=bar` -> `{ foo: "bar" }`.
  * This is useful for stacks where you may push a new screen that changes the query parameters.
  *
  * To observe updates even when the invoking route is not focused, use `useGlobalSearchParams()`.
  */
-export declare function useLocalSearchParams<TParams extends SearchParams = SearchParams>(): Partial<TParams>;
-export {};
+export declare const useLocalSearchParams: ExpoRouter.useLocalSearchParams;
 //# sourceMappingURL=hooks.d.ts.map

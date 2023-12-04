@@ -19,7 +19,7 @@ function useRootNavigation() {
     return router_store_1.store.navigationRef.current;
 }
 exports.useRootNavigation = useRootNavigation;
-function useRouter() {
+const useRouter = () => {
     return react_1.default.useMemo(() => ({
         push: router_store_1.store.push,
         back: router_store_1.store.goBack,
@@ -28,7 +28,7 @@ function useRouter() {
         canGoBack: router_store_1.store.canGoBack,
         // TODO(EvanBacon): add `reload`
     }), []);
-}
+};
 exports.useRouter = useRouter;
 /**
  * @private
@@ -57,9 +57,9 @@ exports.useUnstableGlobalHref = useUnstableGlobalHref;
  * const [first, second] = useSegments<['settings'] | ['[user]'] | ['[user]', 'followers']>()
  * ```
  */
-function useSegments() {
+const useSegments = () => {
     return (0, router_store_1.useStoreRouteInfo)().segments;
-}
+};
 exports.useSegments = useSegments;
 /** @returns global selected pathname without query parameters. */
 function usePathname() {
@@ -75,9 +75,9 @@ exports.usePathname = usePathname;
  *
  * @see `useLocalSearchParams`
  */
-function useGlobalSearchParams() {
+const useGlobalSearchParams = () => {
     return (0, router_store_1.useStoreRouteInfo)().params;
-}
+};
 exports.useGlobalSearchParams = useGlobalSearchParams;
 /**
  * Returns the URL search parameters for the contextually focused route. e.g. `/acme?foo=bar` -> `{ foo: "bar" }`.
@@ -85,12 +85,8 @@ exports.useGlobalSearchParams = useGlobalSearchParams;
  *
  * To observe updates even when the invoking route is not focused, use `useGlobalSearchParams()`.
  */
-function useLocalSearchParams() {
-    return (useOptionalLocalRoute()?.params ?? {});
-}
+const useLocalSearchParams = () => {
+    return (react_1.default.useContext(native_1.NavigationRouteContext)?.params ?? {});
+};
 exports.useLocalSearchParams = useLocalSearchParams;
-function useOptionalLocalRoute() {
-    const route = react_1.default.useContext(native_1.NavigationRouteContext);
-    return route;
-}
 //# sourceMappingURL=hooks.js.map
