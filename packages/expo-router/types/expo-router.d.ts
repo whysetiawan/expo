@@ -18,7 +18,10 @@ declare namespace ExpoRouter {
    * Route Utils  *
    ****************/
   type SearchOrHash = `?${string}` | `#${string}`;
-  type UnknownInputParams = Record<string, string | number | (string | number)[]>;
+  type UnknownInputParams = Record<
+    string,
+    string | number | undefined | null | (string | number)[]
+  >;
   type UnknownOutputParams = Record<string, string | string[]>;
 
   /**
@@ -101,7 +104,7 @@ declare namespace ExpoRouter {
   type InputRouteParams<Path> = {
     [Key in ParameterNames<Path> as Key extends `...${infer Name}`
       ? Name
-      : Key]: Key extends `...${string}` ? (string | number)[] : string | number;
+      : Key]: Key extends `...${string}` ? (string | number)[] : string | number | undefined | null;
   } & UnknownInputParams;
 
   type OutputRouteParams<Path> = {
@@ -181,7 +184,7 @@ declare namespace ExpoRouter {
     replace: <T>(href: Href<T>) => void;
     /** Update the current route query params. */
     setParams: <T = ''>(
-      params?: T extends '' ? Record<string, string> : InputRouteParams<T>
+      params?: T extends '' ? Record<string, string | undefined | null> : InputRouteParams<T>
     ) => void;
   };
 
