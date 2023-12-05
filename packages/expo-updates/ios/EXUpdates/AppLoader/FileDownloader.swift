@@ -1,14 +1,13 @@
 //  Copyright © 2019 650 Industries. All rights reserved.
 
 // swiftlint:disable closure_body_length
-// swiftlint:disable file_length
 // swiftlint:disable force_cast
-// swiftlint:disable function_body_length
 // swiftlint:disable function_parameter_count
 // swiftlint:disable implicitly_unwrapped_optional
 // swiftlint:disable identifier_name
 // swiftlint:disable type_body_length
 // swiftlint:disable legacy_objc_type
+// swiftlint:disable cyclomatic_complexity
 
 import Foundation
 import EASClient
@@ -51,12 +50,14 @@ private extension String {
   func truncate(toMaxLength: Int) -> String {
     if toMaxLength <= 0 {
       return ""
-    } else if toMaxLength < self.count {
+    }
+
+    if toMaxLength < self.count {
       let endIndex = self.index(self.startIndex, offsetBy: toMaxLength)
       return String(self[...endIndex])
-    } else {
-      return self
     }
+
+    return self
   }
 }
 
@@ -77,7 +78,7 @@ private extension Dictionary where Iterator.Element == (key: String, value: Any)
  * Utility class that holds all the logic for downloading data and files, such as update manifests
  * and assets, using NSURLSession.
  */
-public final class FileDownloader: NSObject, URLSessionDataDelegate {
+public final class FileDownloader {
   private static let DefaultTimeoutInterval: TimeInterval = 60
   private static let MultipartManifestPartName = "manifest"
   private static let MultipartDirectivePartName = "directive"
@@ -98,11 +99,10 @@ public final class FileDownloader: NSObject, URLSessionDataDelegate {
   }
 
   required init(config: UpdatesConfig, urlSessionConfiguration: URLSessionConfiguration) {
-    super.init()
     self.sessionConfiguration = urlSessionConfiguration
     self.config = config
     self.logger = UpdatesLogger()
-    self.session = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
+    self.session = URLSession(configuration: sessionConfiguration)
   }
 
   deinit {
@@ -414,36 +414,27 @@ public final class FileDownloader: NSObject, URLSessionDataDelegate {
         errorBlock: errorBlock
       )
       return
-    } else {
-      let responseHeaderData = ResponseHeaderData(
-        protocolVersionRaw: httpResponse.value(forHTTPHeaderField: "expo-protocol-version"),
-        serverDefinedHeadersRaw: httpResponse.value(forHTTPHeaderField: "expo-server-defined-headers"),
-        manifestFiltersRaw: httpResponse.value(forHTTPHeaderField: "expo-manifest-filters"),
-        manifestSignature: httpResponse.value(forHTTPHeaderField: "expo-manifest-signature")
-      )
+    }
 
-      let manifestResponseInfo = ResponsePartInfo(
+    let manifestResponseInfo = ResponsePartInfo(
+      responseHeaderData: responseHeaderData,
+      responsePartHeaderData: ResponsePartHeaderData(signature: httpResponse.value(forHTTPHeaderField: "expo-signature")),
+      body: data
+    )
+
+    parseManifestResponsePartInfo(
+      manifestResponseInfo,
+      extensions: [:],
+      certificateChainFromManifestResponse: nil,
+      database: database
+    ) { manifestUpdateResponsePart in
+      successBlock(UpdateResponse(
         responseHeaderData: responseHeaderData,
-        responsePartHeaderData: ResponsePartHeaderData(signature: httpResponse.value(forHTTPHeaderField: "expo-signature")),
-        body: data
-      )
-
-      parseManifestResponsePartInfo(
-        manifestResponseInfo,
-        extensions: [:],
-        certificateChainFromManifestResponse: nil,
-        database: database
-      ) { manifestUpdateResponsePart in
-        successBlock(UpdateResponse(
-          responseHeaderData: responseHeaderData,
-          manifestUpdateResponsePart: manifestUpdateResponsePart,
-          directiveUpdateResponsePart: nil
-        ))
-      } errorBlock: { error in
-        errorBlock(error)
-      }
-
-      return
+        manifestUpdateResponsePart: manifestUpdateResponsePart,
+        directiveUpdateResponsePart: nil
+      ))
+    } errorBlock: { error in
+      errorBlock(error)
     }
   }
 
@@ -525,6 +516,7 @@ public final class FileDownloader: NSObject, URLSessionDataDelegate {
     }
 
     if config.enableExpoUpdatesProtocolV0CompatibilityMode && manifestPartHeadersAndData == nil {
+      // swiftlint:disable:next line_length
       let message = "Multipart response missing manifest part. Manifest is required in version 0 of the expo-updates protocol. This may be due to the update being a rollback or other directive."
       logger.error(message: message, code: .unknown)
       errorBlock(NSError(
@@ -843,7 +835,9 @@ public final class FileDownloader: NSObject, URLSessionDataDelegate {
   private func extractUpdateResponseDictionary(parsedJson: Any) throws -> [String: Any] {
     if let parsedJson = parsedJson as? [String: Any] {
       return parsedJson
-    } else if let parsedJson = parsedJson as? [Any] {
+    }
+
+    if let parsedJson = parsedJson as? [Any] {
       // TODO: either add support for runtimeVersion or deprecate multi-manifests
       for providedManifest in parsedJson {
         if let providedManifest = providedManifest as? [String: Any],
@@ -1049,27 +1043,13 @@ public final class FileDownloader: NSObject, URLSessionDataDelegate {
       userInfo: [NSLocalizedDescriptionKey: body]
     )
   }
-
-  // MARK: - NSURLSessionTaskDelegate
-
-  public func urlSession(
-    _ session: URLSession,
-    task: URLSessionTask,
-    willPerformHTTPRedirection response: HTTPURLResponse,
-    newRequest request: URLRequest,
-    completionHandler: @escaping (URLRequest?) -> Void
-  ) {
-    completionHandler(request)
-  }
-
-  // MARK: - URLSessionDataDelegate
-
-  public func urlSession(
-    _ session: URLSession,
-    dataTask: URLSessionDataTask,
-    willCacheResponse proposedResponse: CachedURLResponse,
-    completionHandler: @escaping (CachedURLResponse?) -> Void
-  ) {
-    completionHandler(proposedResponse)
-  }
 }
+
+// swiftlint:enable closure_body_length
+// swiftlint:enable force_cast
+// swiftlint:enable function_parameter_count
+// swiftlint:enable implicitly_unwrapped_optional
+// swiftlint:enable identifier_name
+// swiftlint:enable type_body_length
+// swiftlint:enable legacy_objc_type
+// swiftlint:enable cyclomatic_complexity
