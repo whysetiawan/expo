@@ -26,6 +26,15 @@ body:
         [Here's an excellent guide to debugging you can follow](https://gist.github.com/brentvatne/5ac00cba0c70b7a06b89a56787d6bc4a).
   - type: dropdown
     attributes:
+      label: Which major version of Expo Router are you using
+      multiple: false
+      options:
+        - v2
+        - v3
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
       label: Which package manager are you using? (Yarn is recommended)
       multiple: false
       options:
