@@ -8,7 +8,7 @@
 
 ### 🐛 Bug fixes
 
-- Warn users if they are using an incorrect `web.output` with API Routes.
+- Warn users if they are using an incorrect `web.output` with API Routes. ([#25931](https://github.com/expo/expo/pull/25931) by [@marklawlor](https://github.com/marklawlor))
 
 ### 💡 Others
 
