@@ -8,6 +8,8 @@
 
 ### 🐛 Bug fixes
 
+- Warn users if they are using an incorrect `web.output` with API Routes.
+
 ### 💡 Others
 
 ## 0.16.1 — 2023-12-12

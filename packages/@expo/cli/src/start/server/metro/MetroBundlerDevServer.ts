@@ -24,6 +24,7 @@ import { ExportAssetMap } from '../../../export/saveAssets';
 import { Log } from '../../../log';
 import getDevClientProperties from '../../../utils/analytics/getDevClientProperties';
 import { logEventAsync } from '../../../utils/analytics/rudderstackClient';
+import { warnInvalidWebOutput } from '../../../utils/api-routes';
 import { CommandError } from '../../../utils/errors';
 import { getFreePortAsync } from '../../../utils/port';
 import { BundlerDevServer, BundlerStartOptions, DevServerInstance } from '../BundlerDevServer';
@@ -488,32 +489,36 @@ export class MetroBundlerDevServer extends BundlerDevServer {
           })
         );
 
-        if (exp.web?.output === 'server') {
-          // Cache observation for API Routes...
-          observeApiRouteChanges(
-            appDir,
-            {
-              metro,
-              server,
-            },
-            async (filepath, op) => {
-              if (isApiRouteConvention(filepath)) {
-                debug(`[expo-cli] ${op} ${filepath}`);
-                if (op === 'change' || op === 'add') {
-                  rebundleApiRoute(this.projectRoot, filepath, {
-                    ...options,
-                    routerRoot,
-                    baseUrl,
-                  });
-                }
+        // Cache observation for API Routes...
+        observeApiRouteChanges(
+          appDir,
+          {
+            metro,
+            server,
+          },
+          async (filepath, op) => {
+            if (isApiRouteConvention(filepath)) {
+              debug(`[expo-cli] ${op} ${filepath}`);
 
-                if (op === 'delete') {
-                  // TODO: Cancel the bundling of the deleted route.
-                }
+              if (exp.web?.output !== 'server') {
+                warnInvalidWebOutput();
+                return;
+              }
+
+              if (op === 'change' || op === 'add') {
+                rebundleApiRoute(this.projectRoot, filepath, {
+                  ...options,
+                  routerRoot,
+                  baseUrl,
+                });
+              }
+
+              if (op === 'delete') {
+                // TODO: Cancel the bundling of the deleted route.
               }
             }
-          );
-        }
+          }
+        );
       } else {
         // This MUST run last since it's the fallback.
         middleware.use(
