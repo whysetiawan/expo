@@ -11,7 +11,6 @@ import { promisify } from 'util';
 import { sanitizeTemplateAsync } from './Template';
 import { createEntryResolver, createFileTransform } from './createFileTransform';
 import { env } from './utils/env';
-import { stdout } from 'process';
 
 const debug = require('debug')('expo:init:template') as typeof console.log;
 const pipeline = promisify(Stream.pipeline);
