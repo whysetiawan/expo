@@ -8,6 +8,8 @@
 
 ### 🐛 Bug fixes
 
+- Add missing `find-yarn-workspace-root` dependency. ([#25991](https://github.com/expo/expo/pull/25991) by [@byCedric](https://github.com/byCedric))
+
 ### 💡 Others
 
 ## 0.16.3 — 2023-12-15
