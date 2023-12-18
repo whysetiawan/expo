@@ -8,6 +8,8 @@
 
 ### 🐛 Bug fixes
 
+- Add missing `@react-native/dev-middleware` dependency. ([#26000](https://github.com/expo/expo/pull/26000) by [@byCedric](https://github.com/byCedric))
+
 ### 💡 Others
 
 ## 0.16.3 — 2023-12-15
