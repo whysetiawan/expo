@@ -8,6 +8,8 @@
 
 ### 🐛 Bug fixes
 
+- Fixed `SharedObject` leakage on Android. ([#25995](https://github.com/expo/expo/pull/25995) by [@kudo](https://github.com/kudo))
+
 ### 💡 Others
 
 ## 1.11.2 — 2023-12-15
